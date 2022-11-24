@@ -1,9 +1,17 @@
-import Home from "./view/Home";
-
+import Home from "./view/Home/Home";
+import { Routes, Route } from "react-router-dom";
+import Register from "./view/Register/Register";
+import Login from "./view/Login/Login";
+import List from "./view/List/List";
 function App() {
   return (
     <>
-      <Home />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/list" element={<List />} />
+      </Routes>
     </>
   );
 }

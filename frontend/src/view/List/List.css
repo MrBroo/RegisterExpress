@@ -1,0 +1,11 @@
+.list-btn-group {
+  margin: 25px 15px;
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.list-btn-group span:nth-child(2) {
+  margin: 0 25px;
+}
