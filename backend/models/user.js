@@ -7,7 +7,6 @@ const User = new Schema({
   registerDate: { type: Date, default: new Date() },
   lastLoginDate: { type: Date, default: null },
   isBlocked: { type: Boolean, default: false },
-  isDeleted: { type: Boolean, default: false },
 });
 
 module.exports = model("User", User);

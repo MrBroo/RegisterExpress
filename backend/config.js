@@ -1,3 +1,3 @@
-module.exports  =  {
-    secret : "helloWorldLeVel0105" ,
-}
+module.exports = {
+  secret: "helloWorldLeVel0105",
+};

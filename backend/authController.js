@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const { secret } = require("./config");
-// import { ObjectId } from "bson";
 
 const generateAccessToken = (id, username, email) => {
   const payload = {
@@ -45,6 +44,8 @@ class authController {
       const user = await User.findOne({ username });
       if (!user) {
         return res.status(400).json({ message: `User ${username} not found` });
+      } else if (user.isBlocked) {
+        return res.status(403).json({ message: `User ${username} blocked` });
       }
       const validPassword = bcrypt.compareSync(password, user.password);
       if (!validPassword) {
@@ -57,6 +58,7 @@ class authController {
       );
       const token = generateAccessToken(user.id, user.username, user.email);
       return res.json({
+        _id: user._id,
         token,
       });
     } catch (e) {
@@ -72,25 +74,41 @@ class authController {
     } catch (e) {}
   }
 
-  async deleteUser(req, res) {
+  async blockUser(req, res) {
     try {
-      await User.findByIdAndDelete(req._id);
-      console.log(user_id);
-      return res.json({ message: "User deleted successfully" });
-      // const id = req.query.id;
-      // if (!id) {
-      //   return res.status(400).json({ message: `User id ${id} is required` });
-      // }
-      // await User.deleteOne({ _id: id });
+      const _id = req.params.id;
+      await User.findByIdAndUpdate({ _id }, { isBlocked: true });
+      return res.json({ message: "User blocked successfully" });
+    } catch (e) {
+      console.log(e);
+      res.json({ message: "Block error!" });
+    }
+  }
 
-      // return res.json({
-      //   message: "User was deleted",
-      // });
+  async unBlockUser(req, res) {
+    try {
+      const _id = req.params.id;
+      await User.findByIdAndUpdate({ _id }, { isBlocked: false });
+      return res.json({ message: "User blocked successfully" });
+    } catch (e) {
+      console.log(e);
+      res.json({ message: "Block error!" });
+    }
+  }
+
+  async deleteUser(req, res, next) {
+    try {
+      User.findByIdAndRemove(req.params.id, (err, doc) => {
+        if (!err) {
+          return res.json({ message: "User deleted successfully" });
+        } else {
+          console.log(err);
+        }
+      });
     } catch (e) {
       console.log(e);
       res.json({ message: "Delete error!" });
     }
   }
 }
-
 module.exports = new authController();
